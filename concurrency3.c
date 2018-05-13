@@ -9,7 +9,7 @@ void status();
 void choose();
 void add(int, int);
 void rem(int);
-void search(int);
+int search(int);
 int listsize();
 
 int searchers_c;
@@ -202,8 +202,24 @@ void choose() {
 				//if list isnt empty
 				strcpy(choice, "search");
 				searchers_c++;
-				//start searching...
-				//searchers_c--;
+				sleep(1);
+				if (search(myVar) != -1) {
+					printf("\e[1;30m|\e[0m");
+					printf("\e[1;33m Found Value %5d    at Position %d\e[0m",
+						myVar, search(myVar));
+					printf("\t\e[1;30m|\e[0m\n");
+					printf("\e[1;30mo---------------------------------------o\e[0m\n");
+					strcpy(choice, "found");
+				}
+				else {
+					printf("\e[1;30m|\e[0m");
+					printf("\e[1;33m Couldn't Find Value %5d\e[0m",
+						myVar);
+					printf("\t\t\e[1;30m|\e[0m\n");
+					printf("\e[1;30mo---------------------------------------o\e[0m\n");
+					strcpy(choice, "found");
+				}
+				searchers_c--;
 			}
 		}
 		return;
@@ -295,8 +311,25 @@ void rem(int value) {
 	free(bad);
 }
 
-void search(int value) {
-
+int search(int value) {
+	struct Node *n;
+	n = head;
+	int iter = 0;
+	int pos = 0;
+	int confirm = 0;
+	while(n != NULL) {
+		iter++;
+		if (n->data == value) {
+			pos = iter;
+			confirm = 1;
+			break;
+		}
+		n = n->next;
+	}
+	if (confirm == 0) {
+		return -1;
+	}
+	return pos;
 }
 
 int listsize() {
