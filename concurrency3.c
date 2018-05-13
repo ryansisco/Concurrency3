@@ -5,15 +5,21 @@
 #include <signal.h>
 
 void datap();
-void status();
+void status(int);
 void choose();
-void add(int, int);
-void rem(int);
-int search(int);
+void *add(void*);
+void *rem(void*);
+void *search(void*);
 int listsize();
 
 int searchers_c;
 char choice[30];
+int newprompt;
+int foundit[3];
+
+sem_t Searcherthread1;
+sem_t adderthread1;
+sem_t remthread1;
 
 struct Node {
 	int data;
@@ -25,12 +31,17 @@ int main() {
 	system("clear");
 	struct node *head;
 	while(1) {
-		datap();
-		status();
+		if (newprompt == 0) {
+			datap();
+			status(0);
+		}
+		if (newprompt == 1) {
+			datap();
+			status(1);
+			newprompt = 0;
+		}
 		choose();
 	}
-	//loop
-	//loop
 	return 0;
 }
 
@@ -45,7 +56,22 @@ void datap() {
 	printf("\e[1;30m|\e[0m\n");
 }
 
-void status() {
+void status(int op) {
+	if (op == 1) {
+		if (foundit[0]) {
+			printf("\e[1;35m  Found Value %5d    Position %5d\e[0m",
+				foundit[1], foundit[2]);
+			printf("\n\e[1;30mo---------------------------------------o\e[0m\n");
+			strcpy(choice, "found");
+		}
+		else {
+			printf("\e[1;35m Couldn't Find Value %5d\e[0m",
+				foundit[1]);
+			printf("\n\e[1;30mo---------------------------------------o\e[0m\n");
+			strcpy(choice, "found");
+		}
+		return 0;
+	}
 	if (strcmp(choice, "deleted") == 0) {
 		printf("\e[1;30m|\e[0m");
 		printf("\e[1;31m Deleted Item\t\t\t\t\e[0m");
@@ -56,13 +82,6 @@ void status() {
 	if (strcmp(choice, "added") == 0) {
 		printf("\e[1;30m|\e[0m");
 		printf("\e[1;32m Added Item\t\t\t\t\e[0m");
-		printf("\e[1;30m|\e[0m\n");
-		printf("\e[1;30mo---------------------------------------o\e[0m\n");
-		return 0;
-	}
-	if (strcmp(choice, "search") == 0) {
-		printf("\e[1;30m|\e[0m");
-		printf("\e[1;35m Searching\t\t\t\t\e[0m");
 		printf("\e[1;30m|\e[0m\n");
 		printf("\e[1;30mo---------------------------------------o\e[0m\n");
 		return 0;
@@ -79,9 +98,6 @@ void status() {
 		printf("\e[1;33m Invalid Syntax\t\t\t\e[0m");
 		printf("\e[1;30m|\e[0m\n");
 		printf("\e[1;30mo---------------------------------------o\e[0m\n");
-		return 0;
-	}
-	if (strstr(choice, "found")) {
 		return 0;
 	}
 	if (strcmp(choice, "print") == 0) {
@@ -147,9 +163,12 @@ void choose() {
 		}
 		else {
 			//do it
-			//listsize++;
 			strcpy(choice, "added");
-			add(myVar, 1);
+			sem_init(&adderthread1, 0, 1);
+			pthread_t adderthread;
+			pthread_create(&adderthread, NULL, add, (void *)myVar);
+			pthread_join(adderthread, NULL);
+			sem_destroy(&adderthread1);
 		}
 		return;
 	}
@@ -169,7 +188,12 @@ void choose() {
 			//do it
 			if ((listsize() != 0) && (listsize() >= myVar)){
 				//if list isnt empty
-				rem(myVar);
+				sem_init(&remthread1, 0, 1);
+				sem_wait(&remthread1);
+				pthread_t remthread;
+				pthread_create(&remthread, NULL, rem, (void *)myVar);
+				pthread_join(remthread, NULL);
+				sem_destroy(&remthread1);
 				strcpy(choice, "deleted");
 			}
 		}
@@ -200,25 +224,12 @@ void choose() {
 			//do it
 			if (listsize() != 0) {
 				//if list isnt empty
-				strcpy(choice, "search");
 				searchers_c++;
-				sleep(1);
-				if (search(myVar) != -1) {
-					printf("\e[1;30m|\e[0m");
-					printf("\e[1;33m Found Value %5d    at Position %d\e[0m",
-						myVar, search(myVar));
-					printf("\t\e[1;30m|\e[0m\n");
-					printf("\e[1;30mo---------------------------------------o\e[0m\n");
-					strcpy(choice, "found");
-				}
-				else {
-					printf("\e[1;30m|\e[0m");
-					printf("\e[1;33m Couldn't Find Value %5d\e[0m",
-						myVar);
-					printf("\t\t\e[1;30m|\e[0m\n");
-					printf("\e[1;30mo---------------------------------------o\e[0m\n");
-					strcpy(choice, "found");
-				}
+				sem_init(&Searcherthread1, 0, 1);
+				pthread_t Searcherthread;
+				pthread_create(&Searcherthread, NULL, search, (void *)myVar);
+				pthread_join(Searcherthread, NULL);
+				sem_destroy(&Searcherthread1);
 				searchers_c--;
 			}
 		}
@@ -244,7 +255,12 @@ void choose() {
 			//start building singly linked list
 			for (i = 0; i < myVar; i++) {
 				myVal = rand() % 1000;
-				add(myVal, 1);
+				sem_init(&adderthread1, 0, 1);
+				sem_wait(&adderthread1);
+				pthread_t adderthread;
+				pthread_create(&adderthread, NULL, add, (void *)myVal);
+				pthread_join(adderthread, NULL);
+				sem_destroy(&adderthread1);
 			}
 		}
 		return;
@@ -261,7 +277,8 @@ void choose() {
 	}
 }
 
-void add(int value, int fill) {
+void* add(void* value) {
+	int fill = 1;
 	int i;
 	listsize();
 	struct Node *n;
@@ -286,7 +303,7 @@ void add(int value, int fill) {
 	}
 }
 
-void rem(int value) {
+void *rem(void* value) {
 	int i;
 	struct Node *bad;
 	struct Node *l;
@@ -311,7 +328,12 @@ void rem(int value) {
 	free(bad);
 }
 
-int search(int value) {
+void *search(void *arg) {
+
+	foundit[1] = arg;
+
+	newprompt = 1;
+	int value = arg;
 	struct Node *n;
 	n = head;
 	int iter = 0;
@@ -322,14 +344,15 @@ int search(int value) {
 		if (n->data == value) {
 			pos = iter;
 			confirm = 1;
+			foundit[0] = 1;
+			foundit[2] = pos;
 			break;
 		}
 		n = n->next;
 	}
 	if (confirm == 0) {
-		return -1;
+		foundit[0] = 0;
 	}
-	return pos;
 }
 
 int listsize() {
