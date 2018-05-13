@@ -21,6 +21,7 @@ struct Node {
 }*head;
 
 int main() {
+	srand(time(NULL));
 	system("clear");
 	struct node *head;
 	while(1) {
@@ -78,6 +79,9 @@ void status() {
 		printf("\e[1;33m Invalid Syntax\t\t\t\e[0m");
 		printf("\e[1;30m|\e[0m\n");
 		printf("\e[1;30mo---------------------------------------o\e[0m\n");
+		return 0;
+	}
+	if (strstr(choice, "found")) {
 		return 0;
 	}
 	if (strcmp(choice, "print") == 0) {
@@ -165,7 +169,7 @@ void choose() {
 			//do it
 			if ((listsize() != 0) && (listsize() >= myVar)){
 				//if list isnt empty
-				// listsize--;
+				rem(myVar);
 				strcpy(choice, "deleted");
 			}
 		}
@@ -220,9 +224,11 @@ void choose() {
 			//do it
 			strcpy(choice, "build");
 			int i;
+			int myVal;
 			//start building singly linked list
 			for (i = 0; i < myVar; i++) {
-				//listsize++;
+				myVal = rand() % 1000;
+				add(myVal, 1);
 			}
 		}
 		return;
@@ -265,7 +271,28 @@ void add(int value, int fill) {
 }
 
 void rem(int value) {
-
+	int i;
+	struct Node *bad;
+	struct Node *l;
+	struct Node *r;
+	bad = head;
+	for (i = 0; i < value-1; i++) {
+		l = bad;
+		bad = bad->next;
+		r = bad->next;
+	}
+	if (bad == head) {
+		head = bad->next;
+		free(bad);
+		return;
+	}
+	if (r != NULL) {
+		l->next = r;
+		free(bad);
+		return;
+	}
+	l->next = NULL;
+	free(bad);
 }
 
 void search(int value) {
