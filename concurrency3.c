@@ -32,8 +32,8 @@ int main() {
 void datap() {
 	//prints table of what's going on
 	system("clear");
-	printf("-----------------------------------\n");
-	printf("| Searchers:  \e[1;36m%2d\e[0m | List Size:  \e[1;36m%2d\e[0m |\n", 
+	printf("-----------------------------------------\n");
+	printf("| Searchers:  \e[1;36m%5d\e[0m | List Size:  \e[1;36m%5d\e[0m |\n", 
 		searchers_c, listsize);
 }
 
@@ -47,32 +47,32 @@ void clean(int num) {
 
 void status() {
 	if (strcmp(choice, "deleted") == 0) {
-		printf("|\e[1;31m Deleted Item\t\t\t  \e[0m|\n");
-		printf("-----------------------------------\n");
+		printf("|\e[1;31m Deleted Item\t\t\t\t\e[0m|\n");
+		printf("-----------------------------------------\n");
 		return 0;
 	}
 	if (strcmp(choice, "added") == 0) {
-		printf("|\e[1;32m Added Item\t\t\t  \e[0m|\n");
-		printf("-----------------------------------\n");
+		printf("|\e[1;32m Added Item\t\t\t\t\e[0m|\n");
+		printf("-----------------------------------------\n");
 		return 0;
 	}
 	if (strcmp(choice, "search") == 0) {
-		printf("|\e[1;35m Searching\t\t\t  \e[0m|\n");
-		printf("-----------------------------------\n");
+		printf("|\e[1;35m Searching\t\t\t\t\e[0m|\n");
+		printf("-----------------------------------------\n");
 		return 0;
 	}
 	if (strcmp(choice, "build") == 0) {
-		printf("|\e[1;37m Building...\t\t\t  \e[0m|\n");
-		printf("-----------------------------------\n");
+		printf("|\e[1;37m Building...\t\t\t\t\e[0m|\n");
+		printf("-----------------------------------------\n");
 		return 0;
 	}
 	if (strcmp(choice, "error") == 0) {
-		printf("|\e[1;33m Invalid Syntax\t\t  \e[0m|\n");
-		printf("-----------------------------------\n");
+		printf("|\e[1;33m Invalid Syntax\t\t\t\e[0m|\n");
+		printf("-----------------------------------------\n");
 		return 0;
 	}
-	printf("|\t\t\t\t  |\n");
-	printf("-----------------------------------\n");
+	printf("|\t\t\t\t\t|\n");
+	printf("-----------------------------------------\n");
 }
 
 void choose() {
@@ -104,7 +104,7 @@ void choose() {
 				myVar = 10 * myVar + (choice[iter]-'0');
 			}
 		}
-		if (isdigit(myVar)) {
+		if (myVar <= 0) {
 			//if not a digit
 			strcpy(choice, "error");
 		}
@@ -126,8 +126,7 @@ void choose() {
 				myVar = 10 * myVar + (choice[iter]-'0');
 			}
 		}
-		printf("%d\n", myVar );
-		if (isdigit(myVar)) {
+		if (myVar <= 0) {
 			//if not a digit
 			strcpy(choice, "error");
 		}
@@ -151,7 +150,7 @@ void choose() {
 				myVar = 10 * myVar + (choice[iter]-'0');
 			}
 		}
-		if (isdigit(myVar)) {
+		if (myVar <= 0) {
 			//if not a digit
 			strcpy(choice, "error");
 		}
@@ -159,7 +158,6 @@ void choose() {
 			//do it
 			strcpy(choice, "build");
 			int i;
-			printf("myVar = %d\n", myVar);
 			//start building singly linked list
 			for (i = 0; i < myVar; i++) {
 				listsize++;
