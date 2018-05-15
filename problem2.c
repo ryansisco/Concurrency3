@@ -57,7 +57,7 @@ void datap() {
 }
 
 void status(int op) {
-	if (op == 1) {
+	if (op == 1) {	//prints if data was searched
 		if (foundit[0]) {
 			printf("\e[1;35m  Found Value %5d    Position %5d\e[0m",
 				foundit[1], foundit[2]);
@@ -72,42 +72,42 @@ void status(int op) {
 		}
 		return 0;
 	}
-	if (strcmp(choice, "deleted") == 0) {
+	if (strcmp(choice, "deleted") == 0) {	//prints command
 		printf("\e[1;30m|\e[0m");
 		printf("\e[1;31m Deleted Item\t\t\t\t\e[0m");
 		printf("\e[1;30m|\e[0m\n");
 		printf("\e[1;30mo---------------------------------------o\e[0m\n");
 		return 0;
 	}
-	if (strcmp(choice, "added") == 0) {
+	if (strcmp(choice, "added") == 0) {	//prints command
 		printf("\e[1;30m|\e[0m");
 		printf("\e[1;32m Added Item\t\t\t\t\e[0m");
 		printf("\e[1;30m|\e[0m\n");
 		printf("\e[1;30mo---------------------------------------o\e[0m\n");
 		return 0;
 	}
-	if (strcmp(choice, "build") == 0) {
+	if (strcmp(choice, "build") == 0) {	//prints command
 		printf("\e[1;30m|\e[0m");
 		printf("\e[1;37m Building...\t\t\t\t\e[0m");
 		printf("\e[1;30m|\e[0m\n");
 		printf("\e[1;30mo---------------------------------------o\e[0m\n");
 		return 0;
 	}
-	if (strcmp(choice, "error") == 0) {
+	if (strcmp(choice, "error") == 0) {	//prints command
 		printf("\e[1;30m|\e[0m");
 		printf("\e[1;33m Invalid Syntax\t\t\t\e[0m");
 		printf("\e[1;30m|\e[0m\n");
 		printf("\e[1;30mo---------------------------------------o\e[0m\n");
 		return 0;
 	}
-	if (strcmp(choice, "print") == 0) {
+	if (strcmp(choice, "print") == 0) {	//prints entire data table
 		int i;
 		int y;
 		struct Node *n;
 		n = head;
 		printf("\e[1;30m|\e[0m");
-		for (i = 0; i < listsize(); i++) {
-			if ((i % 5 == 0) && (i > 0))  {
+		for (i = 0; i < listsize(); i++) {	//for list size
+			if ((i % 5 == 0) && (i > 0))  {	//breaks in 5s
 				printf("\e[1;30m\t| \n\e[0m");
 				printf("\e[1;30m|\e[0m");
 			}
@@ -115,7 +115,7 @@ void status(int op) {
 			n = n->next;
 		}
 
-		for (y = 0; y < (5 - (i % 5) + 1); y++) {
+		for (y = 0; y < (5 - (i % 5) + 1); y++) { //table organize
 			if (i == 0) {
 				printf("\e[1;30m\t\t\t\t\t\e[0m");
 				break;
@@ -139,13 +139,13 @@ void status(int op) {
 }
 
 void choose() {
-	fgets(choice, 50, stdin);
+	fgets(choice, 50, stdin); //gets commands
 	if (strstr(choice, "add ")) {
 		int myVar = 0;
 		int iter = 0;
 		int neg = 0;
 		int confirm = 0;
-		for (iter = 0; iter < strlen(choice)-1; iter++) {
+		for (iter = 0; iter < strlen(choice)-1; iter++) { //gets number after command
 			if (isdigit(choice[iter])) {
 				if (choice[iter-1] == '-') {
 					neg = 1;
@@ -161,7 +161,7 @@ void choose() {
 			//if not a digit
 			strcpy(choice, "error");
 		}
-		else {
+		else {	//starts thread
 			//do it
 			strcpy(choice, "added");
 			sem_init(&adderthread1, 0, 1);
@@ -175,7 +175,7 @@ void choose() {
 	if (strstr(choice, "del ")) {
 		int myVar = 0;
 		int iter = 0;
-		for (iter = 0; iter < strlen(choice)-1; iter++) {
+		for (iter = 0; iter < strlen(choice)-1; iter++) { //gets number after command
 			if (isdigit(choice[iter])) {
 				myVar = 10 * myVar + (choice[iter]-'0');
 			}
@@ -186,7 +186,7 @@ void choose() {
 		}
 		else {
 			//do it
-			if ((listsize() != 0) && (listsize() >= myVar)){
+			if ((listsize() != 0) && (listsize() >= myVar)){	//starts thread
 				//if list isnt empty
 				sem_init(&remthread1, 0, 1);
 				sem_wait(&remthread1);
@@ -204,7 +204,7 @@ void choose() {
 		int iter = 0;
 		int neg = 0;
 		int confirm = 0;
-		for (iter = 0; iter < strlen(choice)-1; iter++) {
+		for (iter = 0; iter < strlen(choice)-1; iter++) { //gets number after command
 			if (isdigit(choice[iter])) {
 				if (choice[iter-1] == '-') {
 					neg = 1;
@@ -222,7 +222,7 @@ void choose() {
 		}
 		else {
 			//do it
-			if (listsize() != 0) {
+			if (listsize() != 0) {	//starts thread
 				//if list isnt empty
 				searchers_c++;
 				sem_init(&Searcherthread1, 0, 1);
@@ -238,7 +238,7 @@ void choose() {
 	if (strstr(choice, "build ")) {
 		int myVar = 0;
 		int iter = 0;
-		for (iter = 0; iter < strlen(choice)-1; iter++) {
+		for (iter = 0; iter < strlen(choice)-1; iter++) { //gets number after command
 			if (isdigit(choice[iter])) {
 				myVar = 10 * myVar + (choice[iter]-'0');
 			}
@@ -253,7 +253,7 @@ void choose() {
 			int i;
 			int myVal;
 			//start building singly linked list
-			for (i = 0; i < myVar; i++) {
+			for (i = 0; i < myVar; i++) {	//starts thread
 				myVal = rand() % 1000;
 				sem_init(&adderthread1, 0, 1);
 				sem_wait(&adderthread1);
@@ -266,7 +266,7 @@ void choose() {
 		return;
 	}
 	if (strstr(choice, "print")) {
-		strcpy(choice, "print");
+		strcpy(choice, "print"); //eliminates \n
 		return;
 	}
 	if (strstr(choice, "exit")) {
@@ -277,12 +277,12 @@ void choose() {
 	}
 }
 
-void* add(void* value) {
+void* add(void* value) {	//adds data to the linked list
 	int fill = 1;
 	int i;
 	listsize();
 	struct Node *n;
-	if (head == NULL) {
+	if (head == NULL) {	//makes a new head
 		n = (struct Node *)malloc(sizeof(struct Node));
 		head = n;
 		head->data = value;
@@ -291,7 +291,7 @@ void* add(void* value) {
 	}
 	struct Node *e = head;
 	int a = 0;
-	for (i = 0; i < fill; i++) {
+	for (i = 0; i < fill; i++) { //fills outside head
 		n = (struct Node *)malloc(sizeof(struct Node));
 		while(e->next != NULL) {
 			e = e->next;
@@ -303,23 +303,23 @@ void* add(void* value) {
 	}
 }
 
-void *rem(void* value) {
+void *rem(void* value) {	//removes item
 	int i;
 	struct Node *bad;
 	struct Node *l;
 	struct Node *r;
 	bad = head;
-	for (i = 0; i < value-1; i++) {
+	for (i = 0; i < value-1; i++) { //gets position in list
 		l = bad;
 		bad = bad->next;
 		r = bad->next;
 	}
-	if (bad == head) {
+	if (bad == head) {	//if head
 		head = bad->next;
 		free(bad);
 		return;
 	}
-	if (r != NULL) {
+	if (r != NULL) {	//if at the end
 		l->next = r;
 		free(bad);
 		return;
@@ -328,10 +328,8 @@ void *rem(void* value) {
 	free(bad);
 }
 
-void *search(void *arg) {
-
+void *search(void *arg) {	//searches list
 	foundit[1] = arg;
-
 	newprompt = 1;
 	int value = arg;
 	struct Node *n;
@@ -339,7 +337,7 @@ void *search(void *arg) {
 	int iter = 0;
 	int pos = 0;
 	int confirm = 0;
-	while(n != NULL) {
+	while(n != NULL) {	//if no head
 		iter++;
 		if (n->data == value) {
 			pos = iter;
@@ -355,7 +353,7 @@ void *search(void *arg) {
 	}
 }
 
-int listsize() {
+int listsize() {	//gets list size
 	struct Node *n;
 	n = head;
 	int iter = 0;

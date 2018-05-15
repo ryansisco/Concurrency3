@@ -1,9 +1,14 @@
-# Concurrency3
+# Concurrency 3
 
 1. Run "make" to compile
-2. Run "./concurrency3" to start
+2. Run "./problem1" or "./problem2" to start either program
 
-**Commands**
+**Problem 1**
+* processes start automatically
+* each thread will add to shared resource
+* exists with CTRL+C
+
+**Problem 2**
 
 * build [# of nodes in linked list]
   * also generates a random value for each node
